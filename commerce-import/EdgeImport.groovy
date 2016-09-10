@@ -83,6 +83,7 @@ def edgeImport(args) {
 
     println 'Sending Edge events'
     // customer scenarios
+    importer.orderCarts()
     importer.createPiwikAndSessionNodes()
     importer.viewAllProducts()
     importer.viewAllCategories()

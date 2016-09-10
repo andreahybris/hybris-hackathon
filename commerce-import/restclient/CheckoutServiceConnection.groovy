@@ -23,7 +23,7 @@ class CheckoutServiceConnection {
     def tenant = null
     def accessToken = null
 
-    CartServiceConnection(baseurl, tenant, accessToken) {
+    CheckoutServiceConnection(baseurl, tenant, accessToken) {
         this.connection = new RestServiceConnection(baseurl, servicePath)
         this.accessToken = accessToken
         this.tenant = tenant
@@ -34,7 +34,10 @@ class CheckoutServiceConnection {
         			"payment" : ["paymentId": "stripe"],
                     "customer": customerEmail]
         def dataJson = (new JsonBuilder(data)).toString()
-        connection.POST(this.tenant + '/checkouts/order', dataJson, "data for ${customerId}", headers())
+        println "------------- CheckoutServiceConnection ---------"
+        println dataJson
+        println "-------------"
+        connection.POST(this.tenant + '/checkouts/order', dataJson, "data for ${customerEmail}", headers())
     }
 
     def headers() {

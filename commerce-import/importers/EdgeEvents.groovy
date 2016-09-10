@@ -181,18 +181,21 @@ class EdgeEvents {
     }
 
     def orderCarts() {
+    	print "this is where we want to be"
         int counter = 0
         int size = products.size()
         customers.each { customer ->
+        	println "****** EdgeEvents *****"
+        	println customer
             counter++
             int completed = counter / size * 100
             customer.cart.each { product ->
-                    print "${customer.customerNumber} (${customer._id}) sending ProceedToCheckoutEvent and OrderEvent for ${product.id}, cart id: ${customer.cartId}, ${completed.toString()}% completed"
+                    println "${customer.customerNumber} (${customer._id}) sending ProceedToCheckoutEvent and OrderEvent for ${product.id}, cart id: ${customer.cartId}, ${completed.toString()}% completed"
                     print clearChar
                     edgeServiceConnection.send('ProceedToCheckoutEvent', customer, product)
                     edgeServiceConnection.send('OrderEvent', customer, product)
                     sleep(50)
-                    checkoutServiceConnection.orderCart(product.id, customer.email)
+                    checkoutServiceConnection.orderCart(product.id, customer.contactEmail)
             }
         }
         println()
