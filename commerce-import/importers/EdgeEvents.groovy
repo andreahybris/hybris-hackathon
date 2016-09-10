@@ -6,6 +6,7 @@ import restclient.CategoryServiceConnection
 import restclient.EdgeServiceConnection
 import restclient.ConsentServiceConnection
 import restclient.PriceServiceConnection
+import restclient.CheckoutServiceConnection
 
 @Grab(group='jline', module='jline', version='0.9.9')
 import jline.*
@@ -19,6 +20,7 @@ class EdgeEvents {
     def cartServiceConnection = ''
     def categoryServiceConnection = ''
     def priceServiceConnection = ''
+    def checkoutServiceConnection = ''
     def customers = ''
     def products = ''
     def userAgents = new JsonSlurper().parseText(new File('sampledata/useragents', 'useragent-data.json').text)
@@ -31,6 +33,7 @@ class EdgeEvents {
         this.cartServiceConnection = new CartServiceConnection(baseurl, tenant, access_token)
         this.categoryServiceConnection = new CategoryServiceConnection(baseurl, tenant, access_token)
         this.priceServiceConnection = new PriceServiceConnection(baseurl, tenant, access_token)
+        this.checkoutServiceConnection = new CheckoutServiceConnection(baseurl, tenant, access_token)
         this.customers = assignExtraCustomerData(customers)
         this.products = assignExtraProductData(products)
     }
@@ -184,13 +187,12 @@ class EdgeEvents {
             counter++
             int completed = counter / size * 100
             customer.cart.each { product ->
-                if (true) { // todo randomize?
                     print "${customer.customerNumber} (${customer._id}) sending ProceedToCheckoutEvent and OrderEvent for ${product.id}, cart id: ${customer.cartId}, ${completed.toString()}% completed"
                     print clearChar
                     edgeServiceConnection.send('ProceedToCheckoutEvent', customer, product)
                     edgeServiceConnection.send('OrderEvent', customer, product)
                     sleep(50)
-                }
+                    checkoutServiceConnection.orderCart(product.id, customer.email)
             }
         }
         println()
